@@ -1,0 +1,1 @@
+"""DIETEC Backend Application Package"""
