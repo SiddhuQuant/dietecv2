@@ -1,18 +1,21 @@
-import { ArrowLeft, Phone, MapPin, Clock, User, Heart } from "lucide-react";
+import { ArrowLeft, Phone, MapPin, Clock, User, Heart, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Alert, AlertDescription } from "./ui/alert";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { ThemeToggle } from "./ThemeToggle";
 import { useState } from "react";
 
 interface DoctorConnectProps {
   onBack: () => void;
   isDarkMode: boolean;
   onToggleTheme: () => void;
+  userName?: string;
+  onLogout?: () => void;
 }
 
-export function DoctorConnect({ onBack, isDarkMode, onToggleTheme }: DoctorConnectProps) {
+export function DoctorConnect({ onBack, isDarkMode, onToggleTheme, userName = "User", onLogout = () => {} }: DoctorConnectProps) {
   const [localDoctors, setLocalDoctors] = useState<{
     name: string;
     specialty: string;
@@ -68,14 +71,38 @@ export function DoctorConnect({ onBack, isDarkMode, onToggleTheme }: DoctorConne
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
-      <div className="max-w-md mx-auto">
-        <div className="flex items-center mb-6">
-          <Button variant="ghost" size="sm" onClick={onBack} className="mr-2 p-2">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <h1 className="text-xl font-semibold">Doctor Connect</h1>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="border-b border-border bg-card">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-teal-600 rounded-lg flex items-center justify-center">
+                <Heart className="h-5 w-5 text-white" fill="white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-foreground">DIETEC</h1>
+                <p className="text-xs text-muted-foreground">Health Dashboard</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
+              <Button variant="outline" size="sm" onClick={onBack}>
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back
+              </Button>
+              <Button variant="outline" size="sm" onClick={onLogout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-6 lg:px-8 py-6">
+      <div className="max-w-md mx-auto\">
 
         {/* Emergency Alert */}
         <Alert className="mb-6 border-red-200 bg-red-50">
@@ -197,6 +224,7 @@ export function DoctorConnect({ onBack, isDarkMode, onToggleTheme }: DoctorConne
             <li>• Save these numbers in your phone contacts</li>
           </ul>
         </Card>
+      </div>
       </div>
     </div>
   );

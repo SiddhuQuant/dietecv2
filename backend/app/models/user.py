@@ -23,6 +23,9 @@ class User(Base):
     gender = Column(String(20), nullable=True)
     address = Column(Text, nullable=True)
     
+    # User role
+    role = Column(String(20), default="patient")  # patient, doctor, admin
+    
     # Profile completion
     is_profile_complete = Column(Boolean, default=False)
     

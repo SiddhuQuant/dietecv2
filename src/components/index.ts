@@ -20,6 +20,8 @@ export { ToastNotification } from './ToastNotification';
 // Core Page Components
 export { HomePage } from './HomePage';
 export { LoginPage } from './LoginPage';
+export { DoctorDashboard } from './DoctorDashboard';
+export { AdminDashboard } from './AdminDashboard';
 export { DietNutritionGuide } from './DietNutritionGuide';
 export { FirstAidHelp } from './FirstAidHelp';
 export { DoctorConnect } from './DoctorConnect';
@@ -28,6 +30,8 @@ export { MedicalDoubts } from './MedicalDoubts';
 export { MedicalAdvisor } from './MedicalAdvisor';
 export { PersonalDoctor } from './PersonalDoctor';
 export { PhysiotherapyExercises } from './PhysiotherapyExercises';
+export { Billing } from './Billing';
+export { Medicines } from './Medicines';
 
 // Feature Components
 export { FoodScanner } from './FoodScanner';

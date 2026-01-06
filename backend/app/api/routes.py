@@ -4,7 +4,7 @@ Main API router that includes all sub-routers
 
 from fastapi import APIRouter
 
-from app.api.endpoints import auth, users, medical, chat, health
+from app.api.endpoints import auth, users, medical, chat, health, bookings, admin
 
 router = APIRouter()
 
@@ -14,3 +14,5 @@ router.include_router(users.router, prefix="/users", tags=["Users"])
 router.include_router(medical.router, prefix="/medical", tags=["Medical History"])
 router.include_router(chat.router, prefix="/chat", tags=["AI Chat"])
 router.include_router(health.router, prefix="/health", tags=["Health Data"])
+router.include_router(bookings.router, prefix="/bookings", tags=["Bookings"])
+router.include_router(admin.router, prefix="/admin", tags=["Admin"])

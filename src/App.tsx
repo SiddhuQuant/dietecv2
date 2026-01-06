@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "./utils/supabase/client";
 import { LoginPage } from "./components/LoginPage";
 import { HomePage } from "./components/HomePage";
+import { DoctorDashboard } from "./components/DoctorDashboard";
+import { AdminDashboard } from "./components/AdminDashboard";
 import { PersonalDoctor } from "./components/PersonalDoctor";
 import { MedicalHistory } from "./components/MedicalHistory";
 import { MedicalDoubts } from "./components/MedicalDoubts";
@@ -9,7 +11,11 @@ import { DietNutritionGuide } from "./components/DietNutritionGuide";
 import { FirstAidHelp } from "./components/FirstAidHelp";
 import { DoctorConnect } from "./components/DoctorConnect";
 import { PhysiotherapyExercises } from "./components/PhysiotherapyExercises";
+import { TestBookingComponent } from "./components/TestBookingComponent";
+import { DoctorBookingComponent } from "./components/DoctorBookingComponent";
 import { VoiceBot } from "./components/VoiceBot";
+import { Billing } from "./components/Billing";
+import { Medicines } from "./components/Medicines";
 import OnboardingGuide from "./components/OnboardingGuide";
 import { MedicalAdvisor } from "./components/MedicalAdvisor";
 import { LoadingScreen } from "./components/LoadingScreen";
@@ -25,11 +31,16 @@ type Section =
   | "firstaid"
   | "doctor"
   | "exercises"
-  | "medicaladvisor";
+  | "medicaladvisor"
+  | "book-tests"
+  | "book-appointments"
+  | "billing"
+  | "medicines";
 
 interface User {
   name: string;
   email: string;
+  role: "patient" | "doctor" | "admin";
 }
 
 export default function App() {
@@ -38,7 +49,8 @@ export default function App() {
       const hash = window.location.hash.replace('#', '');
       const validSections: Section[] = [
         "home", "personal-doctor", "medical", "doubts", "diet",
-        "firstaid", "doctor", "exercises", "medicaladvisor"
+        "firstaid", "doctor", "exercises", "medicaladvisor", "book-tests", "book-appointments",
+        "billing", "medicines"
       ];
       if (validSections.includes(hash as Section)) {
         return hash as Section;
@@ -64,7 +76,8 @@ export default function App() {
       const hash = window.location.hash.replace('#', '');
       const validSections: Section[] = [
         "home", "personal-doctor", "medical", "doubts", "diet",
-        "firstaid", "doctor", "exercises", "medicaladvisor"
+        "firstaid", "doctor", "exercises", "medicaladvisor",
+        "billing", "medicines"
       ];
       
       if (validSections.includes(hash as Section)) {
@@ -81,7 +94,8 @@ export default function App() {
       if (session?.user) {
         setUser({
             name: session.user.user_metadata.name || session.user.email?.split('@')[0] || 'User',
-            email: session.user.email || ''
+            email: session.user.email || '',
+            role: session.user.user_metadata.role || "patient"
         });
       }
       setIsLoading(false);
@@ -104,7 +118,8 @@ export default function App() {
       if (session?.user) {
         setUser({
             name: session.user.user_metadata.name || session.user.email?.split('@')[0] || 'User',
-            email: session.user.email || ''
+            email: session.user.email || '',
+            role: session.user.user_metadata.role || "patient"
         });
         
         // Only check profile on SIGNED_IN event
@@ -232,6 +247,68 @@ export default function App() {
   }
 
   const renderCurrentSection = () => {
+    // Handle role-based dashboard rendering
+    if (currentSection === "home" || currentSection === "home") {
+      if (user?.role === "doctor") {
+        return (
+          <DoctorDashboard
+            onNavigate={navigateToSection}
+            doctorName={user.name}
+            onLogout={handleLogout}
+            isDarkMode={isDarkMode}
+            onToggleTheme={toggleTheme}
+          />
+        );
+      } else if (user?.role === "admin") {
+        return (
+          <AdminDashboard
+            onNavigate={navigateToSection}
+            adminName={user.name}
+            onLogout={handleLogout}
+            isDarkMode={isDarkMode}
+            onToggleTheme={toggleTheme}
+          />
+        );
+      }
+      // Default patient dashboard
+      return (
+        <HomePage
+          onNavigate={navigateToSection}
+          userName={user.name}
+          onLogout={handleLogout}
+          isDarkMode={isDarkMode}
+          onToggleTheme={toggleTheme}
+          onCompleteProfile={() => setShowProfileSetup(true)}
+        />
+      );
+    }
+
+    // Only allow patients to access other sections
+    if (user?.role !== "patient") {
+      // Return to appropriate dashboard for non-patients
+      if (user?.role === "doctor") {
+        return (
+          <DoctorDashboard
+            onNavigate={navigateToSection}
+            doctorName={user.name}
+            onLogout={handleLogout}
+            isDarkMode={isDarkMode}
+            onToggleTheme={toggleTheme}
+          />
+        );
+      } else if (user?.role === "admin") {
+        return (
+          <AdminDashboard
+            onNavigate={navigateToSection}
+            adminName={user.name}
+            onLogout={handleLogout}
+            isDarkMode={isDarkMode}
+            onToggleTheme={toggleTheme}
+          />
+        );
+      }
+    }
+
     switch (currentSection) {
       case "personal-doctor":
         return (
@@ -273,6 +350,8 @@ export default function App() {
             onBack={goHome}
             isDarkMode={isDarkMode}
             onToggleTheme={toggleTheme}
+            userName={userObject?.name || "User"}
+            onLogout={logout}
           />
         );
       case "doctor":
@@ -281,6 +360,8 @@ export default function App() {
             onBack={goHome}
             isDarkMode={isDarkMode}
             onToggleTheme={toggleTheme}
+            userName={userObject?.name || "User"}
+            onLogout={logout}
           />
         );
       case "exercises":
@@ -297,6 +378,42 @@ export default function App() {
             onBack={goHome}
             isDarkMode={isDarkMode}
             onToggleTheme={toggleTheme}
+          />
+        );
+      case "book-tests":
+        return (
+          <TestBookingComponent
+            isDarkMode={isDarkMode}
+            userName={user.name}
+            onLogout={handleLogout}
+            onToggleTheme={toggleTheme}
+            onBack={goHome}
+          />
+        );
+      case "book-appointments":
+        return (
+          <DoctorBookingComponent
+            isDarkMode={isDarkMode}
+            userName={user.name}
+            onLogout={handleLogout}
+            onToggleTheme={toggleTheme}
+            onBack={goHome}
+          />
+        );
+      case "billing":
+        return (
+          <Billing
+            onBack={goHome}
+            userName={user.name}
+            isDarkMode={isDarkMode}
+          />
+        );
+      case "medicines":
+        return (
+          <Medicines
+            onBack={goHome}
+            userName={user.name}
+            isDarkMode={isDarkMode}
           />
         );
       default:

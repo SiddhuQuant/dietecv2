@@ -68,7 +68,7 @@ export function UserProfileSetup({ userName, userEmail, onComplete, isDarkMode }
   }, []);
 
   const updateField = (field: keyof ProfileData, value: string) => {
-    setProfileData(prev => ({ ...prev, [field]: value }));
+    setProfileData((prev: ProfileData) => ({ ...prev, [field]: value }));
   };
 
   const validateStep1 = () => {
@@ -184,7 +184,7 @@ export function UserProfileSetup({ userName, userEmail, onComplete, isDarkMode }
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-2xl"
+        className="w-full max-w-md"
       >
         <Card className="p-6 md:p-8 shadow-2xl">
           {/* Header */}
@@ -295,7 +295,7 @@ export function UserProfileSetup({ userName, userEmail, onComplete, isDarkMode }
                         id="fullName"
                         type="text"
                         value={profileData.fullName}
-                        onChange={(e) => updateField('fullName', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('fullName', e.target.value)}
                         placeholder="Enter your full name"
                         className="mt-1"
                       />
@@ -310,7 +310,7 @@ export function UserProfileSetup({ userName, userEmail, onComplete, isDarkMode }
                         id="dateOfBirth"
                         type="date"
                         value={profileData.dateOfBirth}
-                        onChange={(e) => updateField('dateOfBirth', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('dateOfBirth', e.target.value)}
                         className="mt-1"
                       />
                     </motion.div>
@@ -322,7 +322,7 @@ export function UserProfileSetup({ userName, userEmail, onComplete, isDarkMode }
                           <button
                             key={gender}
                             type="button"
-                            onClick={() => updateField('gender', gender)}
+                            onClick={() => updateField('gender', gender as string)}
                             className={`p-3 rounded-lg border-2 transition-all ${
                               profileData.gender === gender
                                 ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
@@ -358,7 +358,7 @@ export function UserProfileSetup({ userName, userEmail, onComplete, isDarkMode }
                       <Textarea
                         id="address"
                         value={profileData.address}
-                        onChange={(e) => updateField('address', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => updateField('address', e.target.value)}
                         placeholder="Enter your address"
                         className="mt-1"
                         rows={3}
@@ -391,7 +391,7 @@ export function UserProfileSetup({ userName, userEmail, onComplete, isDarkMode }
                         id="emergencyContact"
                         type="text"
                         value={profileData.emergencyContact}
-                        onChange={(e) => updateField('emergencyContact', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('emergencyContact', e.target.value)}
                         placeholder="Enter contact person's name"
                         className="mt-1"
                       />
@@ -406,7 +406,7 @@ export function UserProfileSetup({ userName, userEmail, onComplete, isDarkMode }
                         id="emergencyPhone"
                         type="tel"
                         value={profileData.emergencyPhone}
-                        onChange={(e) => updateField('emergencyPhone', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('emergencyPhone', e.target.value)}
                         placeholder="+91 1234567890"
                         className="mt-1"
                       />
@@ -441,7 +441,7 @@ export function UserProfileSetup({ userName, userEmail, onComplete, isDarkMode }
                         <select
                           id="bloodGroup"
                           value={profileData.bloodGroup}
-                          onChange={(e) => updateField('bloodGroup', e.target.value)}
+                          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => updateField('bloodGroup', e.target.value)}
                           className="mt-1 w-full px-3 py-2 border border-input rounded-md bg-background"
                         >
                           <option value="">Select</option>

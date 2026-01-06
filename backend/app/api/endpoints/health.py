@@ -4,51 +4,17 @@ Health data endpoints (steps, water intake, etc.)
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, Column, String, DateTime, Integer, Float, Text
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.sql import func
+from sqlalchemy import select
 from typing import List, Optional
 from datetime import datetime, date
 from uuid import UUID as PyUUID
-import uuid
 
-from app.core.database import get_db, Base
+from app.core.database import get_db
 from app.core.security import get_current_user
+from app.models.medical import DailyHealth
 from pydantic import BaseModel
 
 router = APIRouter()
-
-
-# ==================== Models ====================
-
-class DailyHealth(Base):
-    """Daily health tracking model."""
-    __tablename__ = "daily_health"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
-    date = Column(DateTime, nullable=False, default=datetime.utcnow)
-    
-    # Steps tracking
-    steps = Column(Integer, default=0)
-    steps_goal = Column(Integer, default=10000)
-    
-    # Water intake (glasses)
-    water_intake = Column(Integer, default=0)
-    water_goal = Column(Integer, default=8)
-    
-    # Sleep (hours)
-    sleep_hours = Column(Float, default=0)
-    
-    # Weight (kg)
-    weight = Column(Float, nullable=True)
-    
-    # Notes
-    notes = Column(Text, nullable=True)
-    
-    # Timestamps
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 
 # ==================== Schemas ====================

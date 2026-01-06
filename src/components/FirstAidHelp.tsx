@@ -1,4 +1,4 @@
-import { ArrowLeft, Heart, Thermometer, Zap, AlertTriangle, Phone, Camera, Scan, Search, ExternalLink } from "lucide-react";
+import { ArrowLeft, Heart, Thermometer, Zap, AlertTriangle, Phone, Camera, Scan, Search, ExternalLink, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -10,9 +10,11 @@ interface FirstAidHelpProps {
   onBack: () => void;
   isDarkMode: boolean;
   onToggleTheme: () => void;
+  userName?: string;
+  onLogout?: () => void;
 }
 
-export function FirstAidHelp({ onBack, isDarkMode, onToggleTheme }: FirstAidHelpProps) {
+export function FirstAidHelp({ onBack, isDarkMode, onToggleTheme, userName = "User", onLogout = () => {} }: FirstAidHelpProps) {
   const [selectedEmergency, setSelectedEmergency] = useState<string | null>(null);
   const [showScanner, setShowScanner] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
@@ -150,12 +152,39 @@ export function FirstAidHelp({ onBack, isDarkMode, onToggleTheme }: FirstAidHelp
     if (!emergency) return null;
 
     return (
-      <div className="min-h-screen bg-background p-4">
+      <div className="min-h-screen bg-background">
+        {/* Header */}
+        <div className="border-b border-border bg-card">
+          <div className="max-w-4xl mx-auto px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-teal-600 rounded-lg flex items-center justify-center">
+                  <Heart className="h-5 w-5 text-white" fill="white" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-foreground">DIETEC</h1>
+                  <p className="text-xs text-muted-foreground">Health Dashboard</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
+                <Button variant="outline" size="sm" onClick={onBack}>
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back
+                </Button>
+                <Button variant="outline" size="sm" onClick={onLogout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="max-w-4xl mx-auto px-6 lg:px-8 py-6">
         <div className="max-w-md mx-auto">
           <div className="flex items-center mb-6">
-            <Button variant="ghost" size="sm" onClick={() => setSelectedEmergency(null)} className="mr-2 p-2">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
             <h1 className="text-xl font-semibold">{emergency.title}</h1>
           </div>
 
@@ -206,22 +235,44 @@ export function FirstAidHelp({ onBack, isDarkMode, onToggleTheme }: FirstAidHelp
             </ul>
           </Card>
         </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="max-w-md mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center">
-            <Button variant="ghost" size="sm" onClick={onBack} className="mr-2 p-2">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <h1 className="text-xl font-semibold text-foreground">First Aid Help</h1>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="border-b border-border bg-card">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-teal-600 rounded-lg flex items-center justify-center">
+                <Heart className="h-5 w-5 text-white" fill="white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-foreground">DIETEC</h1>
+                <p className="text-xs text-muted-foreground">Health Dashboard</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
+              <Button variant="outline" size="sm" onClick={onBack}>
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back
+              </Button>
+              <Button variant="outline" size="sm" onClick={onLogout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
-          <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleTheme} />
         </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-6 lg:px-8 py-6">
+      <div className="max-w-md mx-auto\">
 
         <Alert className="mb-6 border-red-200 bg-red-50">
           <Phone className="h-4 w-4" />
@@ -398,6 +449,7 @@ export function FirstAidHelp({ onBack, isDarkMode, onToggleTheme }: FirstAidHelp
             </Card>
           </div>
         )}
+      </div>
       </div>
     </div>
   );
